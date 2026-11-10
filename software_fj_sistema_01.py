@@ -49,3 +49,42 @@ class SoftwareFJError(Exception):
   def __init__(self, mensaje="Ha ocurrido un error en Software FJ."):
     super().__init__(mensaje)
     self.mensaje = mensaje
+
+# ==============================================================================
+
+# Modificaciones realizadas por Emilio Suarez (Dev 2)
+# Nota para Dev 3: He agregado todas las excepciones del dominio. Ya puedes iniciar la clase abstracta base y la entidad Cliente.
+
+# ==============================================================================
+
+class InvalidClientError(SoftwareFJError):
+  """Lanzada cuando un cliente contiene datos con formato incorrecto."""
+
+  def __init__(self, detalle):
+    super().__init__(f"Error de Datos de Cliente: {detalle}")
+
+
+class ServiceUnavailableError(SoftwareFJError):
+  """Lanzada cuando se intenta usar un servicio inactivo o deshabilitado."""
+
+  def __init__(self, nombre_servicio):
+    super().__init__(
+        f"Servicio No Disponible: El servicio '{nombre_servicio}' está fuera de"
+        " servicio."
+    )
+
+
+class ReservationError(SoftwareFJError):
+  """Lanzada ante fallos en la confirmación o cancelación de reservas."""
+
+  def __init__(self, id_reserva, motivo):
+    super().__init__(f"Error en Reserva [{id_reserva}]: {motivo}")
+
+
+class CalculationError(SoftwareFJError):
+  """Lanzada ante incoherencias matemáticas en duraciones o tarifas."""
+
+  def __init__(self, detalle):
+    super().__init__(f"Error de Cálculo: {detalle}")
+
+
