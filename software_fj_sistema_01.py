@@ -88,3 +88,65 @@ class CalculationError(SoftwareFJError):
     super().__init__(f"Error de Cálculo: {detalle}")
 
 
+# ==============================================================================
+# 3. CLASES ABSTRACTAS Y CLIENTE (ENCAPSULACIÓN ESTRICTA)
+# Autor: Bryam Garizabal (Dev 3)
+# Nota para Dev 4: Dejo lista la abstracción general y el constructor de Cliente con validación para ID y Nombre. Falta validar email y teléfono.
+# ==============================================================================
+
+
+class EntidadSistema(ABC):
+  """Clase abstracta base para las entidades administradas."""
+
+  @abstractmethod
+  def obtener_identificador(self):
+    """Obliga a cada entidad hija a devolver su identificador único."""
+    pass
+
+
+class Cliente(EntidadSistema):
+  """Representa un cliente con propiedades encapsuladas y validaciones estrictas."""
+
+  def __init__(self, id_cliente, nombre, email, telefono):
+    # Son atributos privados (con "_"): no se tocan directamente desde fuera
+    self._id_cliente = None
+    self._nombre = None
+    self._email = None
+    self._telefono = None
+
+    # Al asignar con "self.xxx" se ejecutan los setters, que validan el dato
+    self.id_cliente = id_cliente
+    self.nombre = nombre
+    self.email = email
+    self.telefono = telefono
+    # Si todas las validaciones pasan, se deja constancia en el registo o log
+    logger.info(f"Cliente registrado: ID {self._id_cliente} - {self._nombre}")
+
+  @property
+  def id_cliente(self):
+    """Getter: permite leer el ID con cliente.id_cliente."""
+    return self._id_cliente
+
+  @id_cliente.setter
+  def id_cliente(self, valor):
+    """Setter: valida que el ID sea solo numérico antes de guardarlo."""
+    valor_str = str(valor).strip()  # Convierte a texto y quita espacios
+    if not valor_str.isdigit():  # isdigit() es False si hay letras o simbolos
+      raise InvalidClientError("El ID del cliente debe ser puramente numérico.")
+    self._id_cliente = valor_str  # Solo se guarda si pasó la validación
+
+  @property
+  def nombre(self):
+    """Getter: permite leer el nombre con cliente.nombre."""
+    return self._nombre
+
+  @nombre.setter
+  def nombre(self, valor):
+    """Setter: valida que el nombre tenga al menos 3 caracteres."""
+    valor_str = str(valor).strip()  # Quita espacios al inicio y al final
+    if len(valor_str) < 3:  # Rechaza nombres demasiado cortos
+      raise InvalidClientError(
+          "El nombre del cliente debe tener al menos 3 caracteres."
+      )
+    self._nombre = valor_str  # Se guarda solo si es válido
+
