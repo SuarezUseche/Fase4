@@ -150,3 +150,39 @@ class Cliente(EntidadSistema):
       )
     self._nombre = valor_str  # Se guarda solo si es válido
 
+# ==============================================================================
+# 4. VALIDACIÓN DE EMAIL Y TELEFONO (ENCAPSULACION DE CLIENTE)
+# Autor: Auri Paez (Dev 4)
+# Nota para Dev 5: Cliente queda 100% validado con excepciones. Te paso el testigo para crear la clase abstracta Servicio.
+# ==============================================================================
+
+    @property
+    def email(self):
+      return self._email
+
+    @email.setter
+    def email(self, valor):
+      valor_str = str(valor).strip()
+      if "@" not in valor_str or "." not in valor_str:
+        raise InvalidClientError(
+            f"El correo '{valor_str}' no es un email válido."
+        )
+      self._email = valor_str
+
+    @property
+    def telefono(self):
+      return self._telefono
+
+    @telefono.setter
+    def telefono(self, valor):
+      valor_str = str(valor).strip()
+      if len(valor_str) < 7:
+        raise InvalidClientError("El teléfono debe tener al menos 7 dígitos.")
+      self._telefono = valor_str
+
+    def obtener_identificador(self):
+      return self._id_cliente
+
+    def __str__(self):
+      return f"Cliente [{self._id_cliente}]: {self._nombre} ({self._email})"
+
