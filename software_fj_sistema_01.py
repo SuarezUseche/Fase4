@@ -186,3 +186,33 @@ class Cliente(EntidadSistema):
     def __str__(self):
       return f"Cliente [{self._id_cliente}]: {self._nombre} ({self._email})"
 
+# ==============================================================================
+# 4. SERVICIOS Y POLIMORFISMO
+# Autor: Aura Moreno (Dev 5)
+# Nota para Dev 1: Definí el contrato abstracto de Servicio. Por favor crea la primera subclase ReservaSala.
+# ==============================================================================
+
+
+class Servicio(EntidadSistema):
+  """Clase abstracta para los servicios ofertados por Software FJ."""
+
+  def __init__(self, cod_servicio, nombre_servicio, precio_base):
+    self.cod_servicio = cod_servicio
+    self.nombre_servicio = nombre_servicio
+    self.precio_base = float(precio_base)
+    self.disponible = True
+
+  def obtener_identificador(self):
+    return self.cod_servicio
+
+  def validar_disponibilidad(self):
+    if not self.disponible:
+      raise ServiceUnavailableError(self.nombre_servicio)
+
+  @abstractmethod
+  def calcular_costo(self, duracion, impuesto=0.19, descuento=0.0):
+    pass
+
+  @abstractmethod
+  def describir(self):
+    pass
