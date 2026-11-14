@@ -216,3 +216,38 @@ class Servicio(EntidadSistema):
   @abstractmethod
   def describir(self):
     pass
+
+# Modificaciones realizadas por Jesus Martinez (Dev 1)
+# Nota para Dev 2: ReservaSala terminada. Continúa con la subclase AlquilerEquipo.
+
+
+class ReservaSala(Servicio):
+  """Subclase para la reserva de salas de reuniones/conferencias."""
+
+  def __init__(
+      self,
+      cod_servicio,
+      nombre_servicio,
+      precio_hora,
+      capacidad_personas,
+      incluye_proyector=True,
+  ):
+    super().__init__(cod_servicio, nombre_servicio, precio_hora)
+    self.capacidad_personas = int(capacidad_personas)
+    self.incluye_proyector = incluye_proyector
+
+  def calcular_costo(self, duracion, impuesto=0.19, descuento=0.0):
+    if duracion <= 0:
+      raise CalculationError("La duración en horas debe ser mayor a 0.")
+    subtotal = self.precio_base * duracion
+    if self.incluye_proyector:
+      subtotal += 50000.0  # Cargo adicional por proyector
+    subtotal_desc = subtotal * (1.0 - descuento)
+    return round(subtotal_desc * (1.0 + impuesto), 2)
+
+  def describir(self):
+    proy = "Con proyector" if self.incluye_proyector else "Sin proyector"
+    return (
+        f"Sala '{self.nombre_servicio}' (Capacidad: {self.capacidad_personas}"
+        f" pers, {proy}) - ${self.precio_base:,.0f}/h"
+    )
