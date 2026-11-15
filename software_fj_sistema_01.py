@@ -251,3 +251,40 @@ class ReservaSala(Servicio):
         f"Sala '{self.nombre_servicio}' (Capacidad: {self.capacidad_personas}"
         f" pers, {proy}) - ${self.precio_base:,.0f}/h"
     )
+# Modificaciones realizadas por Emilio Suarez (Dev 2)
+# Nota para Dev 3: AlquilerEquipo lista. Falta la tercera subclase AsesoriaEspecializada.
+
+
+class AlquilerEquipo(Servicio):
+  """Subclase para el alquiler de equipos de cómputo."""
+
+  def __init__(
+      self,
+      cod_servicio,
+      nombre_servicio,
+      precio_dia,
+      tipo_equipo,
+      deposito_garantia=100000.0,
+  ):
+    super().__init__(cod_servicio, nombre_servicio, precio_dia)
+    self.tipo_equipo = tipo_equipo
+    self.deposito_garantia = float(deposito_garantia)
+
+  def calcular_costo(self, duracion, impuesto=0.19, descuento=0.0):
+    if duracion <= 0:
+      raise CalculationError("La duración en días debe ser mayor a 0.")
+    subtotal = (self.precio_base * duracion) * (1.0 - descuento)
+    return round((subtotal * (1.0 + impuesto)) + self.deposito_garantia, 2)
+
+  def describir(self):
+    return (
+        f"Equipo '{self.nombre_servicio}' [{self.tipo_equipo}] -"
+        f" ${self.precio_base:,.0f}/día (Garantía:"
+        f" ${self.deposito_garantia:,.0f})"
+    )
+
+
+
+
+
+
