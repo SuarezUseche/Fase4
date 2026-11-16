@@ -284,7 +284,44 @@ class AlquilerEquipo(Servicio):
     )
 
 
+# Modificaciones realizadas por Bryam Garizabal (Dev 3)
+# Nota para Dev 4: Catálogo de servicios completado. Inicia el modelo Reserva.
 
+
+class AsesoriaEspecializada(Servicio):
+  """Subclase para consultorías especializadas en software."""
+
+  def __init__(
+      self,
+      cod_servicio,
+      nombre_servicio,
+      precio_hora,
+      consultor,
+      nivel_experiencia="Senior",
+  ):
+    # Llama al constructor de Servicio (código, nombre y precio base por hora)
+    super().__init__(cod_servicio, nombre_servicio, precio_hora)
+    # Atributos propios de la asesoría
+    self.consultor = consultor
+    self.nivel_experiencia = nivel_experiencia
+
+  def calcular_costo(self, duracion, impuesto=0.19, descuento=0.0):
+    # Una duración de 0 o negativa no tiene sentido: error de cálculo propio
+    if duracion <= 0:
+      raise CalculationError("La duración debe ser mayor a 0 horas.")
+    # Los consultores Senior cobran un 30% más; los demás, tarifa normal
+    mult = 1.3 if self.nivel_experiencia == "Senior" else 1.0
+    # Subtotal = tarifa x horas x multiplicador, menos el descuento
+    subtotal = (self.precio_base * duracion * mult) * (1.0 - descuento)
+    # Se suma el impuesto y se redondea a 2 decimales
+    return round(subtotal * (1.0 + impuesto), 2)
+
+  def describir(self):
+    # Devuelve un texto que resume la asesoría (polimorfismo de describir)
+    return (
+        f"Asesoría '{self.nombre_servicio}' con {self.consultor}"
+        f" ({self.nivel_experiencia}) - ${self.precio_base:,.0f}/h"
+    )
 
 
 
