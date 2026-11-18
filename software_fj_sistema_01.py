@@ -323,5 +323,24 @@ class AsesoriaEspecializada(Servicio):
         f" ({self.nivel_experiencia}) - ${self.precio_base:,.0f}/h"
     )
 
+# ==============================================================================
+# 5. GESTIÓN DE RESERVAS (ESTRUCTURA TRY / EXCEPT / ELSE / FINALLY)
+# Autor: Auri paez (Dev 4)
+# Nota para Dev 5: Creé la base de la clase Reserva. Favor implementar confirmar_reserva() con bloque try/except/else/finally.
+# ==============================================================================
+
+
+class Reserva(EntidadSistema):
+  """Gestiona el ciclo de vida de una reserva con control estricto de excepciones."""
+
+  def __init__(self, id_reserva, cliente, servicio, duracion):
+    self.id_reserva = id_reserva
+    self.cliente = cliente
+    self.servicio = servicio
+    self.duracion = duracion
+    self.estado = "PENDIENTE"
+
+  def obtener_identificador(self):
+    return self.id_reserva
 
 
