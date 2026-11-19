@@ -344,3 +344,32 @@ class Reserva(EntidadSistema):
     return self.id_reserva
 
 
+    # Modificaciones realizadas por Aura Moreno (Dev 5)
+    # Nota para Dev 1: Método confirmar_reserva listo. Por favor agrega cancelar_reserva() y los métodos de cálculo.
+
+    def confirmar_reserva(self):
+      logger.info(f"Procesando confirmación de reserva [{self.id_reserva}]...")
+      try:
+        if self.estado != "PENDIENTE":
+          raise ReservationError(
+              self.id_reserva,
+              f"La reserva ya se encuentra en estado '{self.estado}'.",
+          )
+        self.servicio.validar_disponibilidad()
+      except ServiceUnavailableError as err:
+        logger.error(f"Error confirmando reserva [{self.id_reserva}]: {err}")
+        self.estado = "RECHAZADA"
+        raise ReservationError(
+            self.id_reserva, "Servicio inactivo."
+        ) from err
+      except ReservationError as err:
+        logger.warning(f"Advertencia en reserva [{self.id_reserva}]: {err}")
+        raise
+      else:
+        self.estado = "CONFIRMADA"
+        logger.info(f"Reserva [{self.id_reserva}] CONFIRMADA exitosamente.")
+      finally:
+        logger.debug(
+            f"Fin del procesamiento para reserva [{self.id_reserva}]. Estado"
+            f" final: {self.estado}"
+        )
