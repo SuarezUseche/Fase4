@@ -373,3 +373,29 @@ class Reserva(EntidadSistema):
             f"Fin del procesamiento para reserva [{self.id_reserva}]. Estado"
             f" final: {self.estado}"
         )
+
+    # Modificaciones realizadas por Jesus Martinez (Dev 1)
+    # Nota para Dev 2: La clase Reserva está completa. Te dejo la creación del script de simulación de las 10 operaciones.
+
+    def cancelar_reserva(self):
+      try:
+        if self.estado == "CANCELADA":
+          raise ValueError("La reserva ya estaba cancelada anteriormente.")
+        self.estado = "CANCELADA"
+        logger.info(f"Reserva [{self.id_reserva}] CANCELADA por el cliente.")
+      except ValueError as err:
+        logger.error(f"Error cancelando reserva [{self.id_reserva}]: {err}")
+        raise ReservationError(
+            self.id_reserva, "Acción inválida."
+        ) from err
+
+    def calcular_total_reserva(self, impuesto=0.19, descuento=0.0):
+      return self.servicio.calcular_costo(
+          self.duracion, impuesto=impuesto, descuento=descuento
+      )
+
+    def __str__(self):
+      return (
+          f"Reserva [{self.id_reserva}] | {self.cliente.nombre} |"
+          f" {self.servicio.nombre_servicio} | Estado: {self.estado}"
+      )
