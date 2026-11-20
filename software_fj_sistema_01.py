@@ -401,7 +401,7 @@ class Reserva(EntidadSistema):
       )
 # ==============================================================================
 # 6. SIMULACIÓN DE 10 OPERACIONES SECUENCIALES
-# Autor: Andrés Gómez (Dev 4)
+# Autor: Emilio Suarez (Dev 4)
 # Nota final: Integración final de pruebas. Demuestra la captura sin caídas del sistema.
 # ==============================================================================
 
