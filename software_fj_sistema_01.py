@@ -399,3 +399,146 @@ class Reserva(EntidadSistema):
           f"Reserva [{self.id_reserva}] | {self.cliente.nombre} |"
           f" {self.servicio.nombre_servicio} | Estado: {self.estado}"
       )
+# ==============================================================================
+# 6. SIMULACIÓN DE 10 OPERACIONES SECUENCIALES
+# Autor: Andrés Gómez (Dev 4)
+# Nota final: Integración final de pruebas. Demuestra la captura sin caídas del sistema.
+# ==============================================================================
+
+
+def ejecutar_simulacion():
+  print("\n" + "=" * 75)
+  print("      SISTEMA DE GESTIÓN SOFTWARE FJ - SIMULACIÓN DE 10 OPERACIONES")
+  print("=" * 75 + "\n")
+
+  # OP 1: Registro correcto de Cliente 1
+  print("[OP 1] Registrando Cliente Válido 1...")
+  try:
+    c1 = Cliente(
+        "1010123456", "Carlos Pérez", "carlos.perez@email.com", "3001234567"
+    )
+    print(f"  -> Éxito: {c1}")
+  except SoftwareFJError as e:
+    print(f"  -> Error capturado: {e}")
+
+  # OP 2: Registro fallido de Cliente (ID no numérico)
+  print("\n[OP 2] Probando registro de cliente con ID inválido...")
+  try:
+    c_invalid = Cliente(
+        "1010ABC", "Ana Gómez", "ana.gomez@email.com", "3009876543"
+    )
+  except SoftwareFJError as e:
+    print(f"  -> Captura de Excepción Esperada: {e}")
+
+  # OP 3: Registro fallido de Cliente (Email sin @)
+  print("\n[OP 3] Probando registro de cliente con correo inválido...")
+  try:
+    c_invalid2 = Cliente(
+        "1020304050", "Luis Torres", "correo_invalido.com", "3115551234"
+    )
+  except SoftwareFJError as e:
+    print(f"  -> Captura de Excepción Esperada: {e}")
+
+  # OP 4: Registro correcto de Cliente 2
+  print("\n[OP 4] Registrando Cliente Válido 2...")
+  try:
+    c2 = Cliente("1030405060", "Laura Martínez", "laura.m@email.com", "3158889900")
+    print(f"  -> Éxito: {c2}")
+  except SoftwareFJError as e:
+    print(f"  -> Error capturado: {e}")
+
+  # OP 5: Creación del catálogo de servicios
+  print("\n[OP 5] Creando catálogo de servicios...")
+  sala1 = ReservaSala(
+      "SRV-01",
+      "Sala Principal A",
+      precio_hora=80000,
+      capacidad_personas=15,
+      incluye_proyector=True,
+  )
+  equipo1 = AlquilerEquipo(
+      "SRV-02",
+      "Laptop Dell XPS",
+      precio_dia=120000,
+      tipo_equipo="Computador Portátil",
+  )
+  asesoria1 = AsesoriaEspecializada(
+      "SRV-03",
+      "Arquitectura en la Nube",
+      precio_hora=150000,
+      consultor="Ing. Ramírez",
+      nivel_experiencia="Senior",
+  )
+  print(f"  -> {sala1.describir()}")
+  print(f"  -> {equipo1.describir()}")
+  print(f"  -> {asesoria1.describir()}")
+
+  # OP 6: Reserva 1 Válida (Sala) y cálculo de costo
+  print(
+      "\n[OP 6] Creando y confirmando Reserva 1 (Reserva de Sala por 4"
+      " horas)..."
+  )
+  reserva1 = Reserva("RES-101", c1, sala1, duracion=4)
+  try:
+    reserva1.confirmar_reserva()
+    costo1 = reserva1.calcular_total_reserva(impuesto=0.19, descuento=0.10)
+    print(f"  -> {reserva1}")
+    print(f"  -> Total con IVA (19%) y 10% Desc: ${costo1:,.2f}")
+  except SoftwareFJError as e:
+    print(f"  -> Error en reserva: {e}")
+
+  # OP 7: Confirmación doble en Reserva 1 (Error de Estado)
+  print("\n[OP 7] Probando confirmación doble en Reserva 1...")
+  try:
+    reserva1.confirmar_reserva()
+  except SoftwareFJError as e:
+    print(f"  -> Captura de Excepción Esperada: {e}")
+
+  # OP 8: Reserva 2 en Servicio Inactivo (Error ServiceUnavailableError)
+  print("\n[OP 8] Probando reserva de un servicio inactivo...")
+  equipo1.disponible = False
+  reserva2 = Reserva("RES-102", c2, equipo1, duracion=3)
+  try:
+    reserva2.confirmar_reserva()
+  except SoftwareFJError as e:
+    print(f"  -> Captura de Excepción Esperada: {e}")
+
+  # OP 9: Reserva 3 Válida (Asesoría) y Cancelación posterior
+  print(
+      "\n[OP 9] Creando Reserva 3 (Asesoría), confirmando y luego cancelando..."
+  )
+  reserva3 = Reserva("RES-103", c2, asesoria1, duracion=2)
+  try:
+    reserva3.confirmar_reserva()
+    costo3 = reserva3.calcular_total_reserva()
+    print(f"  -> Costo Asesoría (2h Senior + IVA): ${costo3:,.2f}")
+    reserva3.cancelar_reserva()
+    print(f"  -> Estado tras cancelación: {reserva3.estado}")
+  except SoftwareFJError as e:
+    print(f"  -> Error: {e}")
+
+  # OP 10: Doble cancelación en Reserva 3
+  print("\n[OP 10] Probando doble cancelación en Reserva 3...")
+  try:
+    reserva3.cancelar_reserva()
+  except SoftwareFJError as e:
+    print(f"  -> Captura de Excepción Esperada: {e}")
+
+  print("\n" + "=" * 75)
+  print(
+      "  SIMULACIÓN FINALIZADA CON ÉXITO. REVISAR EL ARCHIVO GENERADO"
+      " 'software_fj.log'"
+  )
+  print("=" * 75 + "\n")
+
+
+if __name__ == "__main__":
+  ejecutar_simulacion()
+
+
+
+
+
+
+
+
